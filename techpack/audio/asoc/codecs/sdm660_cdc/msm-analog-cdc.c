@@ -3337,6 +3337,9 @@ static int msm_anlg_cdc_codec_enable_lo_pa(struct snd_soc_dapm_widget *w,
 				       DIG_CDC_EVENT_RX3_MUTE_OFF);
 		break;
 	case SND_SOC_DAPM_PRE_PMD:
+#ifdef CONFIG_MACH_MEIZU_M1721
+		usleep_range(4000, 4100);
+#endif
 		msm_anlg_cdc_dig_notifier_call(component,
 				       DIG_CDC_EVENT_RX3_MUTE_ON);
 		break;
