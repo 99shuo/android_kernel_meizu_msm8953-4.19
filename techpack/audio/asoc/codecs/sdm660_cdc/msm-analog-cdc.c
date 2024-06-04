@@ -81,8 +81,10 @@ static bool spkr_boost_en = true;
 static char on_demand_supply_name[][MAX_ON_DEMAND_SUPPLY_NAME_LENGTH] = {
 	"cdc-vdd-mic-bias",
 	"",
+#ifndef CONFIG_MACH_MEIZU_M1721
 	"cdc-vdda18-l10",
 	"cdc-vdd-l1",
+#endif
 };
 
 static struct wcd_mbhc_register
@@ -2938,6 +2940,9 @@ static int msm_anlg_cdc_lo_dac_event(struct snd_soc_dapm_widget *w,
 			MSM89XX_PMIC_ANALOG_RX_LO_DAC_CTL, 0x08, 0x08);
 		snd_soc_component_update_bits(component,
 			MSM89XX_PMIC_ANALOG_RX_LO_DAC_CTL, 0x40, 0x40);
+#ifdef CONFIG_MACH_MEIZU_M1721
+		msleep(5);
+#endif
 		break;
 	case SND_SOC_DAPM_POST_PMU:
 		snd_soc_component_update_bits(component,
@@ -3541,6 +3546,8 @@ static const struct snd_soc_dapm_widget msm_anlg_cdc_dapm_widgets[] = {
 		msm_anlg_cdc_codec_enable_on_demand_supply,
 		SND_SOC_DAPM_PRE_PMU |
 		SND_SOC_DAPM_POST_PMD),
+
+#ifndef CONFIG_MACH_MEIZU_M1721
 	SND_SOC_DAPM_SUPPLY("VDDA18_L10_REGULATOR", SND_SOC_NOPM,
 		ON_DEMAND_VDDA18_L10, 0,
 		msm_anlg_cdc_codec_enable_on_demand_supply,
@@ -3551,6 +3558,7 @@ static const struct snd_soc_dapm_widget msm_anlg_cdc_dapm_widgets[] = {
 		msm_anlg_cdc_codec_enable_on_demand_supply,
 		SND_SOC_DAPM_PRE_PMU |
 		SND_SOC_DAPM_POST_PMD),
+#endif
 
 	SND_SOC_DAPM_MICBIAS_E("MIC BIAS Internal1",
 		MSM89XX_PMIC_ANALOG_MICB_1_EN, 7, 0,
@@ -4265,6 +4273,7 @@ static int msm_anlg_cdc_soc_probe(struct snd_soc_component *component)
 	atomic_set(&sdm660_cdc->on_demand_list[ON_DEMAND_MICBIAS].ref,
 		   0);
 
+#ifndef CONFIG_MACH_MEIZU_M1721
 	msm_anlg_cdc_update_micbias_regulator(
 				sdm660_cdc,
 				on_demand_supply_name[ON_DEMAND_VDD_L1],
@@ -4278,6 +4287,7 @@ static int msm_anlg_cdc_soc_probe(struct snd_soc_component *component)
 			&sdm660_cdc->on_demand_list[ON_DEMAND_VDDA18_L10]);
 	atomic_set(&sdm660_cdc->on_demand_list[ON_DEMAND_VDDA18_L10].ref,
 		   0);
+#endif
 
 	sdm660_cdc->fw_data = devm_kzalloc(component->dev,
 					sizeof(*(sdm660_cdc->fw_data)),
@@ -4325,12 +4335,14 @@ static void msm_anlg_cdc_soc_remove(struct snd_soc_component *component)
 	sdm660_cdc_priv->on_demand_list[ON_DEMAND_MICBIAS].supply = NULL;
 	atomic_set(&sdm660_cdc_priv->on_demand_list[ON_DEMAND_MICBIAS].ref,
 		   0);
+#ifndef CONFIG_MACH_MEIZU_M1721
 	sdm660_cdc_priv->on_demand_list[ON_DEMAND_VDD_L1].supply = NULL;
 	atomic_set(&sdm660_cdc_priv->on_demand_list[ON_DEMAND_VDD_L1].ref,
 		   0);
 	sdm660_cdc_priv->on_demand_list[ON_DEMAND_VDDA18_L10].supply = NULL;
 	atomic_set(&sdm660_cdc_priv->on_demand_list[ON_DEMAND_VDDA18_L10].ref,
 		   0);
+#endif
 
 	wcd_mbhc_deinit(&sdm660_cdc_priv->mbhc);
 }

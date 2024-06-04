@@ -25,7 +25,7 @@
 #include "q6afecal-hwdep.h"
 
 #ifdef CONFIG_MSM_CIRRUS_PLAYBACK
-#include "../asoc/msm-cirrus-playback.h"
+#include <dsp/msm-cirrus-playback.h>
 #endif
 
 #define WAKELOCK_TIMEOUT	5000
@@ -1085,7 +1085,7 @@ static int32_t afe_callback(struct apr_client_data *data, void *priv)
 
 #ifdef CONFIG_MSM_CIRRUS_PLAYBACK
 		if (!crus_afe_callback(data->payload,
-							   data->payload_size))
+					   data->payload_size))
 			return 0;
 #endif
 
