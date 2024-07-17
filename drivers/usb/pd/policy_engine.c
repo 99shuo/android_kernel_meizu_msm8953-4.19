@@ -380,7 +380,7 @@ struct usbpd {
 	struct device		dev;
 	struct workqueue_struct	*wq;
 	struct work_struct	sm_work;
-#ifdef CONFIG_MACH_LONGCHEER
+#ifdef CONFIG_MACH_MSM8953
 	struct delayed_work 	vbus_work;
 #endif
 	struct work_struct	start_periph_work;
@@ -4592,7 +4592,7 @@ static ssize_t get_battery_status_show(struct device *dev,
 }
 static DEVICE_ATTR_RW(get_battery_status);
 
-#ifdef CONFIG_MACH_LONGCHEER
+#ifdef CONFIG_MACH_MSM8953
 struct usbpd *pd_lobal;
 unsigned int pd_vbus_ctrl = 0;
 
@@ -4689,7 +4689,7 @@ static struct attribute *usbpd_attrs[] = {
 	&dev_attr_get_pps_status.attr,
 	&dev_attr_get_battery_cap.attr,
 	&dev_attr_get_battery_status.attr,
-#ifdef CONFIG_MACH_LONGCHEER
+#ifdef CONFIG_MACH_MSM8953
 	&dev_attr_pd_vbus.attr,
 #endif
 	NULL,
@@ -4815,7 +4815,7 @@ struct usbpd *usbpd_create(struct device *parent)
 		goto del_pd;
 	}
 	INIT_WORK(&pd->sm_work, usbpd_sm);
-#ifdef CONFIG_MACH_LONGCHEER
+#ifdef CONFIG_MACH_MSM8953
 	INIT_DELAYED_WORK(&pd->vbus_work,usbpd_vbus_sm);
 #endif
 	INIT_WORK(&pd->start_periph_work, start_usb_peripheral_work);
@@ -4965,7 +4965,7 @@ struct usbpd *usbpd_create(struct device *parent)
 	/* force read initial power_supply values */
 	psy_changed(&pd->psy_nb, PSY_EVENT_PROP_CHANGED, pd->usb_psy);
 
-#ifdef CONFIG_MACH_LONGCHEER
+#ifdef CONFIG_MACH_MSM8953
 	pd_lobal = pd;
 #endif
 
